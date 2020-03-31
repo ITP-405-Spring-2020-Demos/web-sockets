@@ -5,6 +5,16 @@ connection.onmessage = (event) => {
   pubsub.publish(type, data);
 };
 
+pubsub.subscribe('total-users-changed', (count) => {
+  document.getElementById('total').innerText = count;
+});
+
+connection.onopen = () => {  
+  connection.send(JSON.stringify({
+    type: 'total-users-changed'
+  }));
+};
+
 pubsub.subscribe('chat-message', (message) => {
   let li = document.createElement('li');
   li.innerText = message;
@@ -20,4 +30,8 @@ document.querySelector('form').addEventListener('submit', (event) => {
   });
   connection.send(data);
   document.querySelector('#message').value = '';
+});
+
+document.querySelector('#leave').addEventListener('click', () => {
+  connection.close();
 });
